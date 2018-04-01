@@ -36,8 +36,6 @@ export class User {
 
     return new Promise((resolve, reject) => {
 
-      if (!this.headers.has('app-type'))
-        this.headers.append('app-type', this.appType);
       if (!this.headers.has('mobile'))
         this.headers.append('mobile', data.mobile);
       if (!this.headers.has('password'))
@@ -98,12 +96,11 @@ appKey = "";
 
   auth(data) {
     console.log("auth input data inside:::::::::::::::::::::::::::::::::", JSON.stringify(data));
-    if (!this.headers.has('app-type'))
-      this.headers.append('app-type', this.appType);
+    
 
     return new Promise((resolve, reject) => {
 
-      this.http.post(apiUrl, JSON.stringify(data), { headers: this.headers })
+      this.http.post(apiUrl, JSON.stringify({user:data}), { headers: this.headers })
         .subscribe(res => {
           this.res = res.json();
           console.log("response", JSON.stringify(this.res));
