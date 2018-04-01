@@ -2,6 +2,7 @@ import * as express from "express";
 import { json, urlencoded } from "body-parser";
 import * as http from "http";
 import * as path from "path";
+import * as cors from "cors";
 
 import { PostRouter } from "./routes/post/post.controller";
 import { APIDocsRouter } from "./routes/swagger";
@@ -10,6 +11,30 @@ import { UsersRouter } from "./routes/users/users.controller";
 import { GroupRouter } from "./routes/group/group.controller";
 
 const app = express();
+
+// //options for cors midddleware
+// const options:cors.CorsOptions = {
+//   allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token"],
+//   credentials: true,
+//   methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
+//   origin: 'api.united121.shatkonlabs.com',
+//   preflightContinue: false
+// };
+
+// //use cors middleware
+// app.use(cors(options));
+
+// //add your routes
+
+// //enable pre-flight
+// app.options("*", cors(options));
+
+app.use( function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+  next();
+});
 
 app.use(json());
 app.use(urlencoded({
