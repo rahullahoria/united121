@@ -1,0 +1,61 @@
+
+<ion-header *ngIf="mobileSet">
+  <ion-toolbar text-center>
+    <ion-title>
+      <img src="./assets/img/Livechek_text.png" style="width:110px">
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding>
+    <!-- <ion-scroll scrollY="false"> -->
+    <div >
+        <div *ngIf="!mobileSet">
+                <div text-center style="margin-top:10%;margin-bottom:2%;">
+                        <img src="./assets/imgs/logo.png"  />
+                        <h1>Let's United121</h1>
+                    </div>
+            
+            <p text-center style="margin-bottom: 40px;">
+                    Create Groups, Post Anonymous, Add members, Chat Post Writers and much more...
+                </p>
+            <ion-list>
+     
+                <ion-item>
+                    <ion-input id="Number" text-center type="tel" maxlength="10"   placeholder="Please enter your mobile number" [(ngModel)]="mobile" (ionChange)="submited=mobile.length!=10;error='';"></ion-input>
+                </ion-item>     
+            </ion-list>
+            <ion-row>
+              <ion-col width-50>
+                <ion-label>
+                  {{error}}
+                </ion-label>
+              </ion-col>
+            </ion-row>
+        </div>
+        <div *ngIf="mobileSet">
+            <div text-center style="margin-top:20%;margin-bottom:20%;">
+                <img src="./assets/img/otp.png" width="200px">
+            </div>
+            <ion-list>
+                <ion-item>
+                    <ion-input text-center type="text" placeholder="Please Provide OTP recieved via SMS" [(ngModel)]="otp" max-length="6" min-length="6" (ionChange)="submited=otp.length<6;error='';"></ion-input>
+                </ion-item>
+                <ion-item style="text-align: center;">
+                    <button ion-button color="light" [disabled]="sentTime > 0" (click)="auth()">Resend OTP on {{mobile}} after {{sentTime}}</button> <br>
+                    <button ion-button color="light" (click)="mobileSet=false"> Edit Mobile No.</button>
+                </ion-item>
+            </ion-list>
+            <ion-row>
+              <ion-col width-50>
+                <ion-label>
+                  {{error}}
+                </ion-label>
+              </ion-col>
+            </ion-row>
+        </div>
+
+        <button id="next" ion-button full style="position: fixed; bottom:1px;left:0px;right:0px;margin-bottom: 0px;" [disabled]="submited" (click)="(mobileSet)?checkOtp():auth()">Next</button>
+    </div>
+    
+</ion-content>
+<!-- </ion-scroll> -->
