@@ -86,6 +86,8 @@ export class UsersRouter {
 
             try{
                 request.body.user.otp = parseInt(stringGen(6));
+                if((request.body.user.mobileNumber+"").length <= 10) 
+                request.body.user.mobileNumber = '91' + request.body.user.mobileNumber;
             const userObj = await User.findOneAndUpdate({"mobileNumber": request.body.user.mobileNumber}, {$set: request.body.user}, {upsert: true});
             //console.log("user",userObj);
             if(userObj){
