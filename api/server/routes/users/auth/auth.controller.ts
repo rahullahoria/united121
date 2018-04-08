@@ -71,13 +71,13 @@ export class AuthRouter {
                 console.log(req.params, req.headers);
                     if(req.query.type == "otp"){
                         
-                        console.log((req.params.userId+"").length);
+                        //console.log((req.params.userId+"").length);
                         
-                        if((req.params.userId+"").length < 9) 
+                        if((req.params.userId+"").length <= 10) 
                                     req.params.userId = '91' + req.params.userId;
                         console.log("otp>>>>",req.params,
         
-                                    JSON.stringify({ 'mobileNumber': req.params.id+"", 'otp': req.body.otp }));
+                                    JSON.stringify({ 'mobileNumber': req.params.id*1, 'otp': req.body.otp*1 }));
 
                         var userObj = await User.getUserByMobileAndOtp(req.params.id,req.body.otp);
                         console.log(userObj);

@@ -14,10 +14,10 @@ export class UsersRouter {
         this.router.use('/users', new AuthRouter().getRouter());
         /**
          * @swagger
-         * /api/users:
+         * /api/users/:id:
          *   get:
          *     tags:
-         *      - Author
+         *      - Users
          *     description:
          *      List of all users registered in system.
          *     produces:
@@ -86,12 +86,15 @@ export class UsersRouter {
 
             try{
                 request.body.user.otp = parseInt(stringGen(6));
-            const userObj = await User.create(request.body.user);
+            const userObj = await User.findOneAndUpdate({"mobileNumber": request.body.user.mobileNumber}, {$set: request.body.user}, {upsert: true});
             //console.log("user",userObj);
+            if(userObj){
             var msg = encodeURI('Hey! ' + request.body.user.otp  + ' is your OTP for this session\nBy United121' ) ;
             sendSMS(request.body.user.mobileNumber,msg);
             
             response.send(resObj(200, "successfully Created",userObj));
+        }else{
+        response.status(400).json({status:{code:400}});}
             }
             catch(e){
                 e['code'] = 400;
