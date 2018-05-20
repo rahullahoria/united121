@@ -5,6 +5,7 @@ import { resObj } from "../common/resObj";
 import { AuthRouter } from "./auth/auth.controller";
 import { sendSMS, stringGen } from "../common/sendSMS";
 import { getFaceId } from "../common/getFaceId";
+var reqOut = require('request');
 
 export class UsersRouter {
 
@@ -87,37 +88,46 @@ export class UsersRouter {
 
             try {
                 if (request.body.user.faceUrl) {
-                    var res = await getFaceId(request.body.user.faceUrl);
-                    request.body.user.faceId = res['faceId'];
-                    const userObj = await User.findOne({ faceId: request.body.user.faceId }).exec();
-                //  console.log("==>",authors,request.params.id);
-                    if(userObj){
-                        response.send(resObj(200, "OTP matched.", userObj));
-                        User.update(
-                            "_id",
-                            userObj._id,
-                            { $addToSet: { profilePic: request.body.user.profilePic } }
-                          );
-                    }
-                    else{
+                    // var res = await getFaceId(request.body.user.faceUrl);
+                    // console.log("==>",request.body.user,res);
 
-                        if(request.body.user.mobileNumber){
-                            const userObj = await User.findOneAndUpdate({ "mobileNumber": request.body.user.mobileNumber }, { $set: request.body.user }, { upsert: true });
-                            //console.log("user",userObj);
-                            if (userObj) {
-                                var msg = encodeURI('Hey! ' + request.body.user.otp + ' is your OTP for this session\nBy United121');
-                                sendSMS(request.body.user.mobileNumber, msg);
-        
-                                response.send(resObj(200, "successfully Created", userObj));
-        
-                            } else 
-                                response.status(400).json({ status: { code: 400 } });
-                            
-                        }else 
-                        response.status(400).json({ status: { code: 400 } });
+                    reqOut('http://jessica.livechek.com/api/find_face/?faceUrl='+encodeURIComponent(request.body.user.faceUrl), async function (error, respOut, body) {
+    
                     
-
-                    }
+                        request.body.user.faceId = JSON.parse(body)['faceId'];
+                        console.log("==>",request.body.user,body);
+                        
+                        const userObj = await User.findOne({ faceId: request.body.user.faceId }).exec();
+                        if(userObj){
+                            response.send(resObj(200, "OTP matched.", userObj));
+                            User.update(
+                                "_id",
+                                userObj._id,
+                                { $addToSet: { profilePic: request.body.user.profilePic } }
+                              );
+                        }
+                        else{
+    
+                            if(request.body.user.mobileNumber){
+                                const userObj = await User.findOneAndUpdate({ "mobileNumber": request.body.user.mobileNumber }, { $set: request.body.user }, { upsert: true });
+                                //console.log("user",userObj);
+                                if (userObj) {
+                                  //  var msg = encodeURI('Hey! ' + request.body.user.otp + ' is your OTP for this session\nBy United121');
+                                    //sendSMS(request.body.user.mobileNumber, msg);
+            
+                                    response.send(resObj(200, "successfully Created", userObj));
+            
+                                } else 
+                                    response.status(400).json({ status: { code: 400 } });
+                                
+                            }else 
+                            response.status(400).json({ status: { code: 400 } });
+                        
+    
+                        }
+                    });
+                  
+                    
 
                 }
                 else {

@@ -1,16 +1,17 @@
 
-var http = require('http');
+//var http = require('http');
+var request = require('request');
 
 
-function callback(response) {
-    return response;
-}
 export const getFaceId = function (faceUrl) {
+    var t = -1;
+    request('http://jessica.livechek.com/api/find_face/?faceUrl='+encodeURIComponent(faceUrl), function (error, response, body) {
+     // console.log('error:', error); // Print the error if one occurred and handle it
+      console.log('body:',body); // Print the response status code if a response was received
+      t = body;
+    });
 
-    var options = {
-        host: 'jessica.livechek.com',
-        path: '/api/find_face/?faceUrl='+encodeURIComponent(faceUrl),
-        method: 'POST'
-    };
-    http.request(options, callback);
+    console.log("t:========>",t);
+    return t;
+
 }
