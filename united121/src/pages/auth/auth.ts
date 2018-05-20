@@ -388,32 +388,7 @@ export class AuthPage {
           console.log("this.user.res.data.appKey ==> ", this.user.appType/*, 
           this.user.res.data[0].vehicle, this.user.res.data[0].vehicle.user.appKey['hash']*/);
 
-          if (this.user.appType == "PIT") {
-            //this.user.appKey = this.user.res.data[0].vehicle.user.appKey['hash'];
-            if (this.user.res.data && this.user.res.data.length > 0) {
-              for (var t = 0; t < this.user.res.data.length; t++) {
-                if (
-                  this.user.res.data[t].userType == 'client' &&
-                  this.user.res.data[t].reportStatus == 'request-approved'
-                ) {
-             //     this.user.policy.company = this.user.res.data[t].companyId;
-               //   this.user.agentData.companyId = this.user.res.data[t].companyId;
-
-                 // this.user.agentData.branchId = this.user.res.data[t].branchId;
-                  //this.user.inspectionId = this.user.res.data[t]._id;
-                  //this.user.vehicle = this.user.res.data[t].vehicle;
-                  break;
-                }
-              }
-            }
-
-
-
-          } else {
-
-            this.user.appKey = this.user.res.data.appKey.hash;
-          }
-
+          
 
           this.saveToNativeStorage();
 

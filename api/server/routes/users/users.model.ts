@@ -4,32 +4,16 @@ import { Document, Model, Schema } from "mongoose";
 export interface IUser extends Document {
 
     mobileNumber?			: number;
+    faceId?			: number;
 	password 				: string;
-	companyId   			: mongoose.Schema.Types.ObjectId ;
-	branchId    			: mongoose.Schema.Types.ObjectId ;
-	workshopId    			: mongoose.Schema.Types.ObjectId ;
-	agentCode   			: string;
 	name                    : string;
 	username				: string;
-	personalEmail			: string;
-	personalAddress			: string;
 	email                   : string;
 	address                 : string; 
 	otp						: number;
-	userType                : string;
-	roles              	    : mongoose.Schema.Types.ObjectId; 
-	drivingLicenseImg 		: {}; 
-	drivingLicenseNumber	: string;              
-	[vehicles: number]	: mongoose.Schema.Types.ObjectId;
-	appKey 					: {};
-	sharing 			    : {};
 	location 				: {};
-	profilePic 			    : string;
-    drivingScore			: number; 
-    
-  age: number;
-  create?: Date;
-  description?: string;
+	profilePic 			    : [{ type: mongoose.Schema.Types.ObjectId }] ;
+ 
 }
 
 export interface IUserModel extends Model<IUser> {
@@ -44,28 +28,15 @@ export interface IUserModel extends Model<IUser> {
 
 const schema = new Schema({	
 	mobileNumber			: Number,
+	faceId			: Number,
 	password 				: String,
-	companyId   			: { type: mongoose.Schema.Types.ObjectId },
-	branchId    			: { type: mongoose.Schema.Types.ObjectId },
-	workshopId    			: { type: mongoose.Schema.Types.ObjectId },
-	agentCode   			: String,
 	name                    : String,
 	username				: String,
-	personalEmail			: String,
-	personalAddress			: String,
 	email                   : String,
 	address                 : String, 
 	otp						: Number,
-	userType                : String,
-	roles              	    : [{ type: mongoose.Schema.Types.ObjectId }], 
-	drivingLicenseImg 		: {}, 
-	drivingLicenseNumber	: String,              
-	vehicles				: [],
-	appKey 					: {},
-	sharing 			    : {},
 	location 				: {},
-	profilePic 			    : String,
-	drivingScore			: { type: Number, default: 50 }
+	profilePic 			    : [{ type: mongoose.Schema.Types.ObjectId }]
 	
 }, { timestamps: true });
 

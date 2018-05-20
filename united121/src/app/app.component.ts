@@ -41,12 +41,14 @@ export class MyApp {
 
           } else {
 
-            this.nav.setRoot(AuthPage);
+           // this.nav.setRoot(AuthPage);
+            this.nav.setRoot(HomePage);
           }
         },
         error => {
           console.error(error);
-          this.nav.setRoot(AuthPage);
+          //this.nav.setRoot(AuthPage);
+          this.nav.setRoot(HomePage);
         }
       );
 

@@ -21,6 +21,9 @@ export class User {
   public otp: any;
   public headers: any;
 
+  public userId = '5ac0cf8c849a881b0d1070f0';
+  public groups = [];
+
   
   constructor(public http: Http) {
 
@@ -104,6 +107,113 @@ appKey = "";
         .subscribe(res => {
           this.res = res.json();
           console.log("response", JSON.stringify(this.res));
+
+          resolve(this.res);
+
+        }, (err) => {
+          console.log("response", JSON.stringify(err));
+          reject(err);
+        });
+    });
+
+  }
+
+  createGroup(data) {
+    console.log("auth input data inside:::::::::::::::::::::::::::::::::", JSON.stringify(data));
+    
+
+    return new Promise((resolve, reject) => {
+
+      this.http.post(apiBaseUrl+'group', JSON.stringify({group:data}), { headers: this.headers })
+        .subscribe(res => {
+          this.res = res.json();
+          console.log("response", JSON.stringify(this.res));
+
+          resolve(this.res);
+
+        }, (err) => {
+          console.log("response", JSON.stringify(err));
+          reject(err);
+        });
+    });
+
+  }
+
+  createPost(data) {
+    console.log("auth input data inside:::::::::::::::::::::::::::::::::", JSON.stringify(data));
+    
+
+    return new Promise((resolve, reject) => {
+
+      this.http.post(apiBaseUrl+'post', JSON.stringify({post:data}), { headers: this.headers })
+        .subscribe(res => {
+          this.res = res.json();
+          console.log("response", JSON.stringify(this.res));
+
+          resolve(this.res);
+
+        }, (err) => {
+          console.log("response", JSON.stringify(err));
+          reject(err);
+        });
+    });
+
+  }
+
+  createMember(data) {
+    console.log("auth input data inside:::::::::::::::::::::::::::::::::", JSON.stringify(data));
+    
+
+    return new Promise((resolve, reject) => {
+
+      this.http.post(apiBaseUrl+'group/'+data.groupId+'/group_member', JSON.stringify({"groupMeber":data}), { headers: this.headers })
+        .subscribe(res => {
+          this.res = res.json();
+          console.log("response", JSON.stringify(this.res));
+
+          resolve(this.res);
+
+        }, (err) => {
+          console.log("response", JSON.stringify(err));
+          reject(err);
+        });
+    });
+
+  }
+  public posts = [];
+  getPosts(gIds){
+    if (!this.headers.has('user-id'))
+    this.headers.append('user-id', this.userId);
+
+    return new Promise((resolve, reject) => {
+
+      this.http.get(apiBaseUrl+'post?groups='+gIds, { headers: this.headers })
+        .subscribe(res => {
+          this.res = res.json();
+          console.log("response", JSON.stringify(this.res));
+          this.posts = this.res['data'];
+
+          resolve(this.res);
+
+        }, (err) => {
+          console.log("response", JSON.stringify(err));
+          reject(err);
+        });
+    });
+
+  }
+  getGroups() {
+    
+    if (!this.headers.has('user-id'))
+    this.headers.append('user-id', this.userId);
+
+    return new Promise((resolve, reject) => {
+
+      this.http.get(apiBaseUrl+'group', { headers: this.headers })
+        .subscribe(res => {
+          this.res = res.json();
+          console.log("response", JSON.stringify(this.res));
+          this.groups = this.res['data'];
 
           resolve(this.res);
 

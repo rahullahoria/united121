@@ -3,7 +3,8 @@ import { User } from "./users.model";
 
 import { resObj } from "../common/resObj";
 import { AuthRouter } from "./auth/auth.controller";
-import { sendSMS,stringGen } from "../common/sendSMS";
+import { sendSMS, stringGen } from "../common/sendSMS";
+import { getFaceId } from "../common/getFaceId";
 
 export class UsersRouter {
 
@@ -30,19 +31,19 @@ export class UsersRouter {
          *       403:
          *         description: Forbidden
          */
-        this.router.get("/users/:id", async(request: Request, response: Response) => {
+        this.router.get("/users/:id", async (request: Request, response: Response) => {
 
-            try{
+            try {
                 //  console.log("==>",request.params.id);
-                  const userObj = await User.findOne({_id:request.params.id}).exec();
+                const userObj = await User.findOne({ _id: request.params.id }).exec();
                 //  console.log("==>",authors,request.params.id);
-                  response.send(resObj(200, "OTP matched.",userObj));
-              }
-              catch(e){
-                  e['code'] = 400;
-                  response.status(400).json({status:e});
-      
-              }
+                response.send(resObj(200, "OTP matched.", userObj));
+            }
+            catch (e) {
+                e['code'] = 400;
+                response.status(400).json({ status: e });
+
+            }
         });
 
         /**
@@ -82,27 +83,66 @@ export class UsersRouter {
          *       403:
          *         description: Forbidden
          */
-        this.router.post("/users", async(request: Request, response: Response) => {
+        this.router.post("/users", async (request: Request, response: Response) => {
 
-            try{
-                request.body.user.otp = parseInt(stringGen(6));
-                if((request.body.user.mobileNumber+"").length <= 10) 
-                request.body.user.mobileNumber = '91' + request.body.user.mobileNumber;
-            const userObj = await User.findOneAndUpdate({"mobileNumber": request.body.user.mobileNumber}, {$set: request.body.user}, {upsert: true});
-            //console.log("user",userObj);
-            if(userObj){
-            var msg = encodeURI('Hey! ' + request.body.user.otp  + ' is your OTP for this session\nBy United121' ) ;
-            sendSMS(request.body.user.mobileNumber,msg);
-            
-            response.send(resObj(200, "successfully Created",userObj));
-        }else{
-        response.status(400).json({status:{code:400}});}
+            try {
+                if (request.body.user.faceUrl) {
+                    var res = await getFaceId(request.body.user.faceUrl);
+                    request.body.user.faceId = res['faceId'];
+                    const userObj = await User.findOne({ faceId: request.body.user.faceId }).exec();
+                //  console.log("==>",authors,request.params.id);
+                    if(userObj){
+                        response.send(resObj(200, "OTP matched.", userObj));
+                        User.update(
+                            "_id",
+                            userObj._id,
+                            { $addToSet: { profilePic: request.body.user.profilePic } }
+                          );
+                    }
+                    else{
+
+                        if(request.body.user.mobileNumber){
+                            const userObj = await User.findOneAndUpdate({ "mobileNumber": request.body.user.mobileNumber }, { $set: request.body.user }, { upsert: true });
+                            //console.log("user",userObj);
+                            if (userObj) {
+                                var msg = encodeURI('Hey! ' + request.body.user.otp + ' is your OTP for this session\nBy United121');
+                                sendSMS(request.body.user.mobileNumber, msg);
+        
+                                response.send(resObj(200, "successfully Created", userObj));
+        
+                            } else 
+                                response.status(400).json({ status: { code: 400 } });
+                            
+                        }else 
+                        response.status(400).json({ status: { code: 400 } });
+                    
+
+                    }
+
+                }
+                else {
+                    request.body.user.otp = parseInt(stringGen(6));
+                    if ((request.body.user.mobileNumber + "").length <= 10)
+                        request.body.user.mobileNumber = '91' + request.body.user.mobileNumber;
+                    const userObj = await User.findOneAndUpdate({ "mobileNumber": request.body.user.mobileNumber }, { $set: request.body.user }, { upsert: true });
+                    //console.log("user",userObj);
+                    if (userObj) {
+                        var msg = encodeURI('Hey! ' + request.body.user.otp + ' is your OTP for this session\nBy United121');
+                        sendSMS(request.body.user.mobileNumber, msg);
+
+                        response.send(resObj(200, "successfully Created", userObj));
+
+                    } else {
+                        response.status(400).json({ status: { code: 400 } });
+                    }
+                }
             }
-            catch(e){
+            catch (e) {
                 e['code'] = 400;
-                response.status(400).json({status:e});
+                response.status(400).json({ status: e });
 
             }
+
         });
 
         return this.router;

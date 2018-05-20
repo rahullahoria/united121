@@ -1,190 +1,158 @@
 <ion-navbar *navbar>
   <button menuToggle>
-  <ion-icon name="menu"></ion-icon>
-</button>
+    <ion-icon name="menu"></ion-icon>
+  </button>
   <ion-title>Getting Started</ion-title>
 </ion-navbar>
 
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>{{tab|uppercase}}</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content class="cards-bg">
+<ion-content>
+  <div class="cards-bg" *ngIf="tab=='home'">
+    <ion-card *ngFor="let p of user.posts;let i = index;">
 
-  <ion-card>
+      <img src="https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/12/knowledge-two.png" />
 
-    <img src="https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/12/knowledge-two.png"/>
+      <ion-card-content>
+        <ion-card-title>
+          {{p.title}}
+        </ion-card-title>
+        <p>
+          {{p.text}}
+        </p>
+      </ion-card-content>
 
-    <ion-card-content>
-      <ion-card-title>
-        Nine Inch Nails Live
-      </ion-card-title>
-      <p>
-        The most popular industrial group ever, and largely responsible for bringing the music to a mass audience.
-      </p>
-    </ion-card-content>
+      <ion-row no-padding>
+        <ion-col>
+          <button ion-button clear small color="danger" icon-start>
+            <ion-icon name='star'></ion-icon>
+            Favorite
+          </button>
+        </ion-col>
+        <ion-col text-center>
+          <button ion-button clear small color="danger" icon-start>
+            <ion-icon name='musical-notes'></ion-icon>
+            Listen
+          </button>
+        </ion-col>
+        <ion-col text-right>
+          <button ion-button clear small color="danger" icon-start>
+            <ion-icon name='share-alt'></ion-icon>
+            Share
+          </button>
+        </ion-col>
+      </ion-row>
 
-    <ion-row no-padding>
-      <ion-col>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='star'></ion-icon>
-          Favorite
-        </button>
-      </ion-col>
-      <ion-col text-center>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='musical-notes'></ion-icon>
-          Listen
-        </button>
-      </ion-col>
-      <ion-col text-right>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='share-alt'></ion-icon>
-          Share
-        </button>
-      </ion-col>
-    </ion-row>
+    </ion-card>
 
-  </ion-card>
 
-  <ion-card>
 
-    <div>
-      <img src="https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/12/knowledge-two.png"/>
+
+
+
+  </div>
+
+  <div class="card-background-page" *ngIf="tab=='group' && user && user.groups && user.groups.length > 0">
+
+    <ion-card *ngFor="let g of user.groups;let i = index;" (click)='oneGroupId=g.group.id;loadPost();'>
+      <img src="https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/12/knowledge-two.png" />
+      <div class="card-title">{{g.group.name}}</div>
+      <div class="card-subtitle">Watch</div>
+    </ion-card>
+
+
+  </div>
+
+  <div *ngIf="tab=='message'">
+
+  </div>
+
+  <div *ngIf="tab=='Add Post'">
+    <ion-card>
+      <form [formGroup]="newPost" (ngSubmit)="addPost()">
+        <ion-item>
+          <ion-label>Title</ion-label>
+          <ion-input type="text" formControlName="title"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Description</ion-label>
+          <ion-textarea formControlName="text" row=10></ion-textarea>
+        </ion-item>
+        <button ion-button type="submit" [disabled]="!newPost.valid">Create Post</button>
+      </form>
+    </ion-card>
+
+  </div>
+
+  <div *ngIf="tab=='Add Member'">
+      <ion-card>
+        <form [formGroup]="newMember" (ngSubmit)="addMember()">
+          <ion-item>
+            <ion-label>Mobile No.</ion-label>
+            <ion-input type="text" formControlName="mobileNumber"></ion-input>
+          </ion-item>
+          <button ion-button type="submit" [disabled]="!newMember.valid">Create Post</button>
+        </form>
+      </ion-card>
+  
     </div>
 
-    <ion-card-content>
-      <ion-card-title>
-        Erykah Badu
-      </ion-card-title>
-      <p>
-      American singer-songwriter, record producer, activist, and actress, Badu's style is a prime example of neo-soul.
-      </p>
-    </ion-card-content>
+  <div *ngIf="tab=='addGroup'">
+    <ion-card>
+      <form [formGroup]="newGroup" (ngSubmit)="addGroup()">
+        <ion-item>
+          <ion-label>Group Name</ion-label>
+          <ion-input type="text" formControlName="name"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Description</ion-label>
+          <ion-textarea formControlName="description" row=10></ion-textarea>
+        </ion-item>
+        <button ion-button type="submit" [disabled]="!newGroup.valid">Create Group</button>
+      </form>
+    </ion-card>
 
-    <ion-row no-padding>
-      <ion-col>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='star'></ion-icon>
-          Favorite
-        </button>
-      </ion-col>
-      <ion-col text-center>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='musical-notes'></ion-icon>
-          Listen
-        </button>
-      </ion-col>
-      <ion-col text-right>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='share-alt'></ion-icon>
-          Share
-        </button>
-      </ion-col>
-    </ion-row>
+  </div>
+  <ion-fab right bottom *ngIf="tab=='group'">
+    <button ion-fab color="light" (click)="tab='addGroup'">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+  <ion-fab right bottom *ngIf="tab=='home'">
 
-  </ion-card>
+    <button ion-fab color="light" (click)="tab='Add Post'" >
+      <ion-icon name="add"></ion-icon>
+    </button>
+    <ion-fab-list side="top">Post
+      <button ion-fab (click)="tab='Add Member'">
+        <ion-icon name="share"></ion-icon>
+      </button>Member
+      <button ion-fab>
+        <ion-icon name="person-add"></ion-icon>
+      </button>
 
-  <ion-card>
+    </ion-fab-list>
 
-    <div>
-      <img src="https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/12/knowledge-two.png"/>
-    </div>
-
-    <ion-card-content>
-      <ion-card-title>
-        Queen
-      </ion-card-title>
-      <p>
-        The British rock band formed in London in 1970, and is considered one of the biggest stadium rock bands in the world.
-      </p>
-    </ion-card-content>
-
-    <ion-row no-padding>
-      <ion-col>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='star'></ion-icon>
-          Favorite
-        </button>
-      </ion-col>
-      <ion-col text-center>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='musical-notes'></ion-icon>
-          Listen
-        </button>
-      </ion-col>
-      <ion-col text-right>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='share-alt'></ion-icon>
-          Share
-        </button>
-      </ion-col>
-    </ion-row>
-
-  </ion-card>
-
-  <ion-card>
-
-    <div>
-      <img src="https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/12/knowledge-two.png"/>
-    </div>
-
-    <ion-card-content>
-      <ion-card-title>
-        Run-D.M.C.
-      </ion-card-title>
-      <p>
-        The American hip hop group widely acknowledged as one of the most influential acts in the history of hip hop.
-      </p>
-    </ion-card-content>
-
-    <ion-row no-padding>
-      
-      <ion-col>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='star'></ion-icon>
-          Favorite  🤗
-          
-        </button>
-      </ion-col>
-      <ion-col text-center>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='musical-notes'></ion-icon>
-          Listen
-        </button>
-      </ion-col>
-      <ion-col text-right>
-        <button ion-button clear small color="danger" icon-start>
-          <ion-icon name='share-alt'></ion-icon>
-          Share
-        </button>
-      </ion-col>
-    </ion-row>
-
-  </ion-card>
-
-  <ion-fab right bottom>
-      <button ion-fab color="light"><ion-icon name="add"></ion-icon></button>
-      <ion-fab-list side="top">Post
-          <button ion-fab><ion-icon name="share"></ion-icon></button>Member
-        <button ion-fab><ion-icon name="person-add"></ion-icon></button>
-        
-      </ion-fab-list>
-    </ion-fab>
-
-
+  </ion-fab>
 </ion-content>
-
 <ion-footer>
-   
+
 
   <ion-row>
-    <ion-col style="text-align:center" ><ion-icon name="home"></ion-icon><br>Home</ion-col>
-    <ion-col style="text-align:center" ><ion-icon name="body"></ion-icon><br>Groups</ion-col>
-    <ion-col style="text-align:center" ><ion-icon name="contacts"></ion-icon><br>Messages</ion-col>
-   
+    <ion-col style="text-align:center" (click)="tab='home';oneGroupId=''">
+      <ion-icon name="home"></ion-icon>
+      <br>Home</ion-col>
+    <ion-col style="text-align:center" (click)="tab='group';user.getGroups()">
+      <ion-icon name="body"></ion-icon>
+      <br>Groups</ion-col>
+    <ion-col style="text-align:center" (click)="tab='message'">
+      <ion-icon name="contacts"></ion-icon>
+      <br>Messages</ion-col>
+
   </ion-row>
 
 </ion-footer>
