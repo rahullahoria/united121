@@ -36,6 +36,17 @@ export class UsersRouter {
 
             try {
                 //  console.log("==>",request.params.id);
+                if(request.query.faceId){
+
+                    let u = await User.findOne({ faceId: request.query.faceId }).exec();
+                    if(u){
+                        return response.send(resObj(200, "successfully found", u));
+                    }
+                    else{
+                        return response.send(resObj(200, "not found", {}));
+                    }
+
+                }
                 const userObj = await User.findOne({ _id: request.params.id }).exec();
                 //  console.log("==>",authors,request.params.id);
                 response.send(resObj(200, "OTP matched.", userObj));
