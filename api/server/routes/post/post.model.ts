@@ -50,7 +50,14 @@ schema.static("getByGroupId", (id:string) => {
             $match:{
                groupId:{ $in: t }
             }
-        }
+        },
+        { "$sort": {'updatedAt': -1} },
+        {"$skip":0}
+        ,
+        
+        // Optionally limit results
+        { "$limit":50 }
+
         
 ])
         .exec();

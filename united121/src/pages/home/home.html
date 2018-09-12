@@ -15,7 +15,9 @@
   <div class="cards-bg" *ngIf="tab=='home'">
     <ion-card *ngFor="let p of user.posts;let i = index;">
 
-      <img src="https://cdn0.tnwcdn.com/wp-content/blogs.dir/1/files/2017/12/knowledge-two.png" />
+      <div *ngIf="p.url">
+      <img src="p.url" />
+    </div>
 
       <ion-card-content>
         <ion-card-title>
@@ -29,14 +31,14 @@
       <ion-row no-padding>
         <ion-col>
           <button ion-button clear small color="danger" icon-start>
-            <ion-icon name='star'></ion-icon>
-            Favorite
+            <ion-icon name='thumbs-up'></ion-icon>
+            Like
           </button>
         </ion-col>
         <ion-col text-center>
           <button ion-button clear small color="danger" icon-start>
-            <ion-icon name='musical-notes'></ion-icon>
-            Listen
+            <ion-icon name='thumbs-down'></ion-icon>
+            Dislike
           </button>
         </ion-col>
         <ion-col text-right>
